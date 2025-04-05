@@ -35,10 +35,11 @@ body {
   margin-top: 20px;
 }
 .spinner-st {
-  width: 100%;
-  height: 100vh;
-  justify-items: center;
-  align-content: center;
+  display: flex; /* Flexbox를 사용 */
+  justify-content: center; /* 가로 중앙 정렬 */
+  align-items: center; /* 세로 중앙 정렬 */
+  width: 100%; /* 가로 크기 */
+  height: 100vh; /* 세로 크기 */
 }
 .main {
   display: flex;
@@ -262,6 +263,13 @@ body {
   }
   .temp-des-time {
     font-size: 14px;
+  }
+  .spinner-st {
+    display: flex; /* Flexbox를 사용 */
+    justify-content: center; /* 가로 중앙 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+    width: 100%; /* 가로 크기 */
+    height: 100vh; /* 세로 크기 */
   }
 }
 

@@ -4,8 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faDroplet,
   faLocationDot,
-  faSmog,
-  faTemperatureQuarter,
+  faTemperatureHigh,
+  faTemperatureLow,
   faWind,
 } from "@fortawesome/free-solid-svg-icons";
 import ButtonPage from "./components/ButtonPage";
@@ -211,6 +211,7 @@ function App() {
     const weatherId = data.weather[0].id;
     const weatherKo = weatherDescKo[weatherId] ? weatherDescKo[weatherId] : "";
     const temp = (data.main.temp - 273.15).toFixed(0);
+    const tempF = temp * 1.8 + 32;
     const temp_max = (data.main.temp_max - 273.15).toFixed(0);
     const temp_min = (data.main.temp_min - 273.15).toFixed(0);
     const humidity = data.main.humidity;
@@ -224,6 +225,7 @@ function App() {
       decription: weatherKo,
       name: name,
       temp: temp,
+      tempF: tempF,
       temp_max: temp_max,
       temp_min: temp_min,
       humidity: humidity, //습도
@@ -305,7 +307,7 @@ function App() {
 
             <div className="display-flex">
               <div>
-                <div className="temp-area">{weather.temp}°</div>
+                <div className="temp-area">{weather.temp}°C</div>
                 <div className="temp-max-min-des">
                   MAX {weather.temp_max}° | MIN {weather.temp_min}°
                 </div>
@@ -323,17 +325,17 @@ function App() {
           <section className="sub-weather">
             <div className="sub-weather-box">
               <div>
-                <FontAwesomeIcon size="2x" icon={faTemperatureQuarter} />
+                <FontAwesomeIcon size="2x" icon={faTemperatureLow} />
               </div>
               <div className="sub-weather-box-text">{weather.temp}°C</div>
               <div>온도</div>
             </div>
             <div className="sub-weather-box">
               <div>
-                <FontAwesomeIcon size="2x" icon={faSmog} />
+                <FontAwesomeIcon size="2x" icon={faTemperatureHigh} />
               </div>
-              <div className="sub-weather-box-text">좋음</div>
-              <div>미세먼지</div>
+              <div className="sub-weather-box-text">{weather.tempF}°F</div>
+              <div>화씨</div>
             </div>
             <div className="sub-weather-box">
               <div>
