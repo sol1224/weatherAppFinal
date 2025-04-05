@@ -1,17 +1,15 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faBars,
   faDroplet,
   faLocationDot,
-  faPlus,
   faSmog,
   faTemperatureQuarter,
   faWind,
 } from "@fortawesome/free-solid-svg-icons";
-import { faFaceSmile, faMoon } from "@fortawesome/free-regular-svg-icons";
+import ButtonPage from "./components/ButtonPage";
+import { DotLoader } from "react-spinners";
 
 // 1. 현재 위치의 날씨가 UI와 함께 나와야 한다
 // 2. 사이트 입장시 현재 위치의 날씨가 보여야 한다.
@@ -147,8 +145,10 @@ const weatherDescKo = {
 
 function App() {
   const OPEN_API_KEY = process.env.REACT_APP_OPEN_API_KEY;
-  const API_URL = process.env.REACT_APP_OPEN_API_URL;
+  const cityList = ["현 위치", "미국", "영국", "일본"];
+  const [city, setCity] = useState("");
   const [weather, setWeather] = useState("");
+  let [loading, setLoading] = useState(true);
 
   // currentLocation value
   const getCurruntLocation = () => {
@@ -178,45 +178,60 @@ function App() {
     }
   };
 
+  // ======== OPEN API(Current)
   // current weather data open API
-  //api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}
+  // api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}
   const getWeatherCurrentLoaction = async (lat, lon) => {
-    try {
-      const res = await axios.get(
-        `${API_URL}lat=${lat}&lon=${lon}&lang=kr&appid=${OPEN_API_KEY}`
-        // `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${OPEN_API_KEY}&units=metric`
-      );
-      console.log("res!!!", res);
-      const transLatedCityName =
-        translationName[res.data.name] || res.data.name;
+    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&lang=kr&appid=${OPEN_API_KEY}}`;
+    const response = await fetch(url);
+    const data = await response.json();
 
-      const weatherId = res.data.weather[0].id;
-      const weatherKo = weatherDescKo[weatherId];
-      const temp = (res.data.main.temp - 273.15).toFixed(0);
-      const temp_max = (res.data.main.temp_max - 273.15).toFixed(0);
-      const temp_min = (res.data.main.temp_min - 273.15).toFixed(0);
-      const humidity = res.data.main.humidity;
-      const windSpeed = res.data.wind.speed;
-      const sunrise = res.data.sys.sunrise;
-      const sunset = res.data.sys.sunset;
+    const transLatedCityName = translationName[data.name] || data.name;
+    setDataInfo(data, transLatedCityName);
+    setLoading(false);
+  };
 
-      const getImg = getWeatherImg(weatherId);
+  // ======== OPEN API(Foreign)
+  //   https://api.openweathermap.org/data/2.5/weather?q={city name}&appid={API key}
+  const getWeatherForeignLocation = async () => {
+    // Japan
+    // China
+    // United Kingdom
+    // United States
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=kr&appid=${OPEN_API_KEY}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    setDataInfo(data);
+    setLoading(false);
+  };
 
-      setWeather({
-        decription: weatherKo,
-        name: transLatedCityName,
-        temp: temp,
-        temp_max: temp_max,
-        temp_min: temp_min,
-        humidity: humidity, //습도
-        windSpeed: windSpeed, //풍속
-        sunrise: sunrise, //일출
-        sunset: sunset, // 일몰
-        getImg: getImg,
-      });
-    } catch (error) {
-      error(error);
-    }
+  // setDataInfo
+  const setDataInfo = (data, transLatedCityName) => {
+    const name = transLatedCityName ? transLatedCityName : data.name;
+    const weatherId = data.weather[0].id;
+    const weatherKo = weatherDescKo[weatherId] ? weatherDescKo[weatherId] : "";
+    const temp = (data.main.temp - 273.15).toFixed(0);
+    const temp_max = (data.main.temp_max - 273.15).toFixed(0);
+    const temp_min = (data.main.temp_min - 273.15).toFixed(0);
+    const humidity = data.main.humidity;
+    const windSpeed = data.wind.speed;
+    const sunrise = data.sys.sunrise;
+    const sunset = data.sys.sunset;
+
+    const getImg = getWeatherImg(weatherId);
+
+    setWeather({
+      decription: weatherKo,
+      name: name,
+      temp: temp,
+      temp_max: temp_max,
+      temp_min: temp_min,
+      humidity: humidity, //습도
+      windSpeed: windSpeed, //풍속
+      sunrise: sunrise, //일출
+      sunset: sunset, // 일몰
+      getImg: getImg,
+    });
   };
 
   const getCurrentTime = () => {
@@ -224,10 +239,6 @@ function App() {
     const currentDate = new Date();
 
     // 각 구성 요소를 가져오기
-    const year = currentDate.getFullYear().toString();
-    const yearPart = year.slice(2, 4);
-    const month = String(currentDate.getMonth() + 1).padStart(2, "0");
-    const day = currentDate.getDate();
     const hours = String(currentDate.getHours()).padStart(2, "0");
     const minutes = String(currentDate.getMinutes()).padStart(2, "0");
     const week = [
@@ -244,17 +255,37 @@ function App() {
 
     return [hours, minutes, dayOfWeek, ampm];
   };
-
-  console.log("getCurrentTime!!!", getCurrentTime());
-
   useEffect(() => {
-    getCurruntLocation();
-  }, [weather]);
+    if (city === "현 위치" || city === "") {
+      getCurruntLocation();
+    } else {
+      getWeatherForeignLocation();
+    }
+  }, [city]);
 
   return (
     <div>
-      <div className="container">
-        {/* <section>
+      {loading ? (
+        <div className="spinner-st">
+          <DotLoader
+            color={`rgba(94, 209, 230, 0.9)`}
+            loading={loading}
+            // cssOverride={override}
+            size={150}
+            aria-label="Loading Spinner"
+            data-testid="loader"
+          />
+        </div>
+      ) : (
+        <div className="container">
+          <section className="cityButton">
+            <ButtonPage
+              city={city}
+              setCity={setCity}
+              cityList={cityList}
+            ></ButtonPage>
+          </section>
+          {/* <section>
           <header className="header">
             <div>
               <FontAwesomeIcon icon={faBars} />
@@ -271,67 +302,72 @@ function App() {
           </header>
         </section> */}
 
-        <section className="main">
-          <div className="temp-location">
-            <div className="header-location-notice">
-              <div className="icon-pd">
-                <FontAwesomeIcon icon={faLocationDot} />
-              </div>
-              <div>{weather.name}</div>
-            </div>
-          </div>
-          <div>
-            <img className="weather-img" src={weather.getImg} alt="sunny"></img>
-          </div>
-
-          <div className="display-flex">
-            <div>
-              <div className="temp-area">{weather.temp}°</div>
-              <div className="temp-max-min-des">
-                MAX {weather.temp_max}° | MIN {weather.temp_min}°
+          <section className="main">
+            <div className="temp-location">
+              <div className="header-location-notice">
+                <div className="icon-pd">
+                  <FontAwesomeIcon icon={faLocationDot} />
+                </div>
+                <div>{weather.name}</div>
               </div>
             </div>
-            <div className="dec-style">
-              <div className="temp-des">{weather.decription}</div>
+            <div>
+              <img
+                className="weather-img"
+                src={weather.getImg}
+                alt="sunny"
+              ></img>
+            </div>
 
-              <div className="temp-des">{getCurrentTime()[2]}</div>
-              <div>{`${getCurrentTime()[0]}:${getCurrentTime()[1]} ${
-                getCurrentTime()[3]
-              }`}</div>
+            <div className="display-flex">
+              <div>
+                <div className="temp-area">{weather.temp}°</div>
+                <div className="temp-max-min-des">
+                  MAX {weather.temp_max}° | MIN {weather.temp_min}°
+                </div>
+              </div>
+              <div className="dec-style">
+                <div className="temp-des">{weather.decription}</div>
+
+                <div className="temp-des">{getCurrentTime()[2]}</div>
+                <div className="temp-des-time">{`${getCurrentTime()[0]}:${
+                  getCurrentTime()[1]
+                } ${getCurrentTime()[3]}`}</div>
+              </div>
             </div>
-          </div>
-        </section>
-        <section className="sub-weather">
-          <div className="sub-weather-box">
-            <div>
-              <FontAwesomeIcon size="2x" icon={faTemperatureQuarter} />
+          </section>
+          <section className="sub-weather">
+            <div className="sub-weather-box">
+              <div>
+                <FontAwesomeIcon size="2x" icon={faTemperatureQuarter} />
+              </div>
+              <div className="sub-weather-box-text">{weather.temp}°C</div>
+              <div>온도</div>
             </div>
-            <div className="sub-weather-box-text">{weather.temp}°C</div>
-            <div>온도</div>
-          </div>
-          <div className="sub-weather-box">
-            <div c>
-              <FontAwesomeIcon size="2x" icon={faSmog} />
+            <div className="sub-weather-box">
+              <div>
+                <FontAwesomeIcon size="2x" icon={faSmog} />
+              </div>
+              <div className="sub-weather-box-text">좋음</div>
+              <div>미세먼지</div>
             </div>
-            <div className="sub-weather-box-text">좋음</div>
-            <div>미세먼지</div>
-          </div>
-          <div className="sub-weather-box">
-            <div>
-              <FontAwesomeIcon size="2x" icon={faDroplet} />
+            <div className="sub-weather-box">
+              <div>
+                <FontAwesomeIcon size="2x" icon={faDroplet} />
+              </div>
+              <div className="sub-weather-box-text">{weather.humidity}%</div>
+              <div>습도</div>
             </div>
-            <div className="sub-weather-box-text">{weather.humidity}%</div>
-            <div>습도</div>
-          </div>
-          <div className="sub-weather-box border-none">
-            <div>
-              <FontAwesomeIcon size="2x" icon={faWind} />
+            <div className="sub-weather-box border-none">
+              <div>
+                <FontAwesomeIcon size="2x" icon={faWind} />
+              </div>
+              <div className="sub-weather-box-text">{weather.humidity}m/s</div>
+              <div>풍속</div>
             </div>
-            <div className="sub-weather-box-text">{weather.humidity}m/s</div>
-            <div>풍속</div>
-          </div>
-        </section>
-      </div>
+          </section>
+        </div>
+      )}
     </div>
   );
 }

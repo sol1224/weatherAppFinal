@@ -23,6 +23,8 @@
 * {
   /* color: white; */
   font-family: GyeonggiTitleLight;
+  padding: 0;
+  margin: 0;
 }
 
 body {
@@ -32,7 +34,12 @@ body {
 .body {
   margin-top: 20px;
 }
-
+.spinner-st {
+  width: 100%;
+  height: 100vh;
+  justify-items: center;
+  align-content: center;
+}
 .main {
   display: flex;
   margin: 0 auto;
@@ -68,8 +75,8 @@ body {
 }
 
 .display-flex {
-  width: 74%;
-  justify-content: space-around;
+  width: 420px;
+  justify-content: space-between;
   display: flex;
   flex-direction: row;
   padding-top: 42px;
@@ -147,11 +154,41 @@ body {
 
 .temp-des {
   padding: 2px 0;
-  font-size: 22px;
+  font-size: 24px;
+}
+
+.button-st {
+  background-color: white;
+  width: 86px;
+  height: 50px;
+  border: none;
+  border-radius: 10px;
+  margin: 6px;
+  font-size: 16px;
+  box-shadow: 0 14px 28px rgba(100, 100, 100, 0.1),
+    0 10px 10px rgba(63, 63, 63, 0.1);
+  &.active {
+    background-color: rgb(48, 48, 48);
+    color: white;
+    cursor: pointer;
+  }
+}
+
+.button-st:hover {
+  background-color: rgb(48, 48, 48);
+  color: white;
+  cursor: pointer;
+}
+
+.cityButton {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding-bottom: 30px;
 }
 
 /* 세로모드 모바일 디바이스 ( 해상도가 576px 보다 작은 화면 ) */
-@media screen and (max-width: 576px) {
+@media screen and (max-width: 440px) {
   .container {
     width: 100%;
     height: 100vh;
@@ -177,8 +214,7 @@ body {
   }
   .main {
     width: 80%;
-    height: 420px;
-    padding: 30px 0;
+    padding: 0;
   }
   .header-location-notice {
     display: none;
@@ -188,9 +224,10 @@ body {
   }
 
   .weather-img {
-    width: 170px;
-    height: 170px;
-    padding: 30px 0;
+    width: 150px;
+    height: 150px;
+    padding-top: 32px;
+    padding-bottom: 18px;
   }
 
   .temp-location-text {
@@ -199,10 +236,32 @@ body {
   }
 
   .sub-weather-box {
-    font-size: 18px;
-    padding-top: 40px;
+    font-size: 14px;
     text-align: center;
     margin: 0 auto;
+  }
+  .sub-weather-box {
+    padding-top: 0px;
+  }
+  .button-st {
+    width: 60px;
+    height: 40px;
+    font-size: 14px;
+    min-width: 50px;
+  }
+  .cityButton {
+    margin: 0 auto;
+    min-width: 200px;
+    padding-bottom: 15px;
+  }
+  .display-flex {
+    width: 220px;
+  }
+  .temp-des {
+    font-size: 14px !important;
+  }
+  .temp-des-time {
+    font-size: 14px;
   }
 }
 
@@ -222,6 +281,9 @@ body {
     font-size: 90px;
   }
   .temp-des {
-    font-size: 18px;
+    font-size: 22px;
+  }
+  .temp-des-time {
+    font-size: 22px;
   }
 }
