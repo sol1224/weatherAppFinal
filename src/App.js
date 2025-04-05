@@ -182,7 +182,7 @@ function App() {
   // current weather data open API
   // api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}
   const getWeatherCurrentLoaction = async (lat, lon) => {
-    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&lang=kr&appid=${OPEN_API_KEY}}`;
+    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&lang=kr&appid=${OPEN_API_KEY}`;
     const response = await fetch(url);
     const data = await response.json();
 
@@ -285,22 +285,6 @@ function App() {
               cityList={cityList}
             ></ButtonPage>
           </section>
-          {/* <section>
-          <header className="header">
-            <div>
-              <FontAwesomeIcon icon={faBars} />
-            </div>
-            <div className="header-location-notice">
-              <div className="icon-pd">
-                <FontAwesomeIcon icon={faLocationDot} />
-              </div>
-              <div>{weather.name}</div>
-            </div>
-            <div>
-              <FontAwesomeIcon icon={faPlus} />
-            </div>
-          </header>
-        </section> */}
 
           <section className="main">
             <div className="temp-location">
