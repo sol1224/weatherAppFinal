@@ -149,6 +149,7 @@ function App() {
   const [city, setCity] = useState("");
   const [weather, setWeather] = useState("");
   let [loading, setLoading] = useState(true);
+  const tempOfWeather = String(weather.temp).padStart(2, "0");
 
   // currentLocation value
   const getCurruntLocation = () => {
@@ -280,78 +281,82 @@ function App() {
         </div>
       ) : (
         <div className="container">
-          <section className="cityButton">
-            <ButtonPage
-              city={city}
-              setCity={setCity}
-              cityList={cityList}
-            ></ButtonPage>
-          </section>
+          <div className="backgound-im">
+            <section className="cityButton">
+              <ButtonPage
+                city={city}
+                setCity={setCity}
+                cityList={cityList}
+              ></ButtonPage>
+            </section>
 
-          <section className="main">
-            <div className="temp-location">
-              <div className="header-location-notice">
-                <div className="icon-pd">
-                  <FontAwesomeIcon icon={faLocationDot} />
-                </div>
-                <div>{weather.name}</div>
-              </div>
-            </div>
-            <div>
-              <img
-                className="weather-img"
-                src={weather.getImg}
-                alt="sunny"
-              ></img>
-            </div>
-
-            <div className="display-flex">
-              <div>
-                <div className="temp-area">{weather.temp}°C</div>
-                <div className="temp-max-min-des">
-                  MAX {weather.temp_max}° | MIN {weather.temp_min}°
+            <section className="main">
+              <div className="temp-location">
+                <div className="header-location-notice">
+                  <div className="icon-pd">
+                    <FontAwesomeIcon icon={faLocationDot} />
+                  </div>
+                  <div>{weather.name}</div>
                 </div>
               </div>
-              <div className="dec-style">
-                <div className="temp-des">{weather.decription}</div>
+              <div>
+                <img
+                  className="weather-img"
+                  src={weather.getImg}
+                  alt="sunny"
+                ></img>
+              </div>
 
-                <div className="temp-des">{getCurrentTime()[2]}</div>
-                <div className="temp-des-time">{`${getCurrentTime()[0]}:${
-                  getCurrentTime()[1]
-                } ${getCurrentTime()[3]}`}</div>
+              <div className="display-flex">
+                <div>
+                  <div className="temp-area">{tempOfWeather}°C</div>
+                  <div className="temp-max-min-des">
+                    MAX {weather.temp_max}° | MIN {weather.temp_min}°
+                  </div>
+                </div>
+                <div className="dec-style">
+                  <div className="temp-des">{weather.decription}</div>
+
+                  <div className="temp-des">{getCurrentTime()[2]}</div>
+                  <div className="temp-des-time">{`${getCurrentTime()[0]}:${
+                    getCurrentTime()[1]
+                  } ${getCurrentTime()[3]}`}</div>
+                </div>
               </div>
-            </div>
-          </section>
-          <section className="sub-weather">
-            <div className="sub-weather-box">
-              <div>
-                <FontAwesomeIcon size="2x" icon={faTemperatureLow} />
+            </section>
+            <section className="sub-weather">
+              <div className="sub-weather-box">
+                <div>
+                  <FontAwesomeIcon size="2x" icon={faTemperatureLow} />
+                </div>
+                <div className="sub-weather-box-text">{weather.temp}°C</div>
+                <div>온도</div>
               </div>
-              <div className="sub-weather-box-text">{weather.temp}°C</div>
-              <div>온도</div>
-            </div>
-            <div className="sub-weather-box">
-              <div>
-                <FontAwesomeIcon size="2x" icon={faTemperatureHigh} />
+              <div className="sub-weather-box">
+                <div>
+                  <FontAwesomeIcon size="2x" icon={faTemperatureHigh} />
+                </div>
+                <div className="sub-weather-box-text">{weather.tempF}°F</div>
+                <div>화씨</div>
               </div>
-              <div className="sub-weather-box-text">{weather.tempF}°F</div>
-              <div>화씨</div>
-            </div>
-            <div className="sub-weather-box">
-              <div>
-                <FontAwesomeIcon size="2x" icon={faDroplet} />
+              <div className="sub-weather-box">
+                <div>
+                  <FontAwesomeIcon size="2x" icon={faDroplet} />
+                </div>
+                <div className="sub-weather-box-text">{weather.humidity}%</div>
+                <div>습도</div>
               </div>
-              <div className="sub-weather-box-text">{weather.humidity}%</div>
-              <div>습도</div>
-            </div>
-            <div className="sub-weather-box border-none">
-              <div>
-                <FontAwesomeIcon size="2x" icon={faWind} />
+              <div className="sub-weather-box border-none">
+                <div>
+                  <FontAwesomeIcon size="2x" icon={faWind} />
+                </div>
+                <div className="sub-weather-box-text">
+                  {weather.humidity}m/s
+                </div>
+                <div>풍속</div>
               </div>
-              <div className="sub-weather-box-text">{weather.humidity}m/s</div>
-              <div>풍속</div>
-            </div>
-          </section>
+            </section>
+          </div>
         </div>
       )}
     </div>
